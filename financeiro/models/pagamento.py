@@ -6,6 +6,7 @@ class Pagamento(models.Model):
   """
   valor = models.DecimalField(
     verbose_name= "Valor",
+    help_text= "*Campo Obrigatório",
     max_digits= 7,
     decimal_places= 2,
   )
