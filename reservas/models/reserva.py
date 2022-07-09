@@ -38,7 +38,6 @@ class Reserva(models.Model):
     Quarto,
     verbose_name= "Quarto",
     null= True,
-    blank= True,
     on_delete= models.SET_NULL,
   )
 

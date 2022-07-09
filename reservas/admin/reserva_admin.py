@@ -20,11 +20,15 @@ class ReservaAdmin(admin.ModelAdmin):
     "valorReserva",
     "pagamentoConfirmado",
     "observacoes",
-    "quarto",
+    "quarto__numero",
   ]
 
   list_filter= [
     "dataChegada",
     "dataSaida",
     "pagamentoConfirmado",
+  ]
+
+  autocomplete_fields= [
+    "quarto",
   ]
