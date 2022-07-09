@@ -29,3 +29,10 @@ class QuartoAdmin(admin.ModelAdmin):
   autocomplete_fields= [
     "usuario_criacao",
   ]
+
+  fields = [
+    "numero",
+    "capacidade",
+    "descricao",
+    "ocupacao",
+  ]
