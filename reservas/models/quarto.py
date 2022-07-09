@@ -2,31 +2,30 @@ from crum import get_current_user
 from django.contrib.auth.models import User
 from django.db import models
 
-class Saida(models.Model):
+class Quarto(models.Model):
   """
-  Esta classe é responsável por todas as funcionalidades de saídas.
-  """ 
-  valor = models.DecimalField(
-    verbose_name= "Valor",
-    help_text= "*Campo Obrigatório",
-    max_digits= 7,
-    decimal_places= 2,
-  )
-
-  dataCriacao = models.DateTimeField(
-    verbose_name= "Data Criação",
-    auto_now_add= True,
-  )
-
-  motivo = models.TextField(
-    verbose_name= "Motivo",
+  Esta classe é responsável por todas as funcionalidades de quartos.
+  """
+  numero = models.IntegerField(
+    verbose_name= "Número",
+    unique= True,
     help_text= "*Campo Obrigatório",
   )
 
-  observacoes = models.TextField(
-    verbose_name= "Observações",
+  capacidade = models.IntegerField(
+    verbose_name= "Capacidade",
+    help_text= "*Campo Obrigatório",
+  )
+
+  descricao = models.TextField(
+    verbose_name= "Descrição",
     null= True,
     blank= True,
+  )
+
+  ocupacao = models.BooleanField(
+    verbose_name= "Ocupação",
+    default= False,
   )
 
   usuario_criacao = models.ForeignKey(
@@ -44,12 +43,12 @@ class Saida(models.Model):
     if not self.pk:
         self.usuario_criacao = user
 
-    super(Saida, self).save(*args, **kwargs)
+    super(Quarto, self).save(*args, **kwargs)
 
   def __str__(self):
-    return f"Saida {self.id}"
+     return f"Quarto {self.numero}"
 
   class Meta:
-    app_label= "financeiro"
-    verbose_name= "Saída"
-    verbose_name_plural= "Saídas"
+    app_label= "reservas"
+    verbose_name= "Quarto"
+    verbose_name_plural= "Quartos"

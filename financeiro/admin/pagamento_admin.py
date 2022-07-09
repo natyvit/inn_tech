@@ -10,6 +10,22 @@ class PagamentoAdmin(admin.ModelAdmin):
     "reserva",
   ]
   
+  search_fields= [
+    "id",
+    "valor",
+    "dataCriacao",
+    "reserva",
+  ]
+
+  list_filter= [
+    "dataCriacao",
+    "reserva",
+  ]
+
+  fields= [
+    "valor",
+  ]
+
   def has_change_permission(self, request, obj= None):
     return False
 
