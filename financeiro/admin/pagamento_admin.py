@@ -1,8 +1,5 @@
 from django.contrib import admin
-from .models import Pagamento
-from .models import Saida
-
-# Register your models here.
+from ..models import Pagamento
 
 @admin.register(Pagamento)
 class PagamentoAdmin(admin.ModelAdmin):
@@ -21,14 +18,3 @@ class PagamentoAdmin(admin.ModelAdmin):
 
   def has_add_permission(self, request):
     return False
-
-@admin.register(Saida)
-class SaidaAdmin(admin.ModelAdmin):
-  list_display= [
-    "id",
-    "valor",
-    "dataCriacao",
-    "motivo",
-    "observacoes",
-    "usuario_criacao",
-  ]
