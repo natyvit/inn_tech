@@ -11,6 +11,7 @@ class ReservaAdmin(admin.ModelAdmin):
     "pagamentoConfirmado",
     "observacoes",
     "quarto",
+    "hospede",
   ]
 
   search_fields= [
@@ -21,14 +22,17 @@ class ReservaAdmin(admin.ModelAdmin):
     "pagamentoConfirmado",
     "observacoes",
     "quarto__numero",
+    "hospede__nome",
   ]
 
   list_filter= [
     "dataChegada",
     "dataSaida",
     "pagamentoConfirmado",
+    "hospede",
   ]
 
   autocomplete_fields= [
     "quarto",
+    "hospede",
   ]
