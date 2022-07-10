@@ -78,10 +78,16 @@ class Reserva(models.Model):
       self.pagamento.atualizar_valor(self.valorReserva)
 
   def ocupar_quarto(self):
-    quarto_descoupado = self.quarto and self.quarto.ocupacao == False
+    quarto_desocupado = self.quarto and self.quarto.ocupacao == False
 
-    if quarto_descoupado:
+    if quarto_desocupado:
       self.quarto.atualizar_ocupacao(True)
+
+  def desocupar_quarto(self):
+    quarto_ocupado = self.quarto and self.quarto.ocupacao == True
+
+    if quarto_ocupado:
+      self.quarto.atualizar_ocupacao(False)
 
   def save(self, *args, **kwargs):
     if self.pk:
