@@ -58,6 +58,10 @@ class Reserva(models.Model):
         reserva=self,
       )
 
+  def atualizar_valor_pagamento(self):
+    if self.gerou_pagamento:
+      self.pagamento.atualizar_valor(self.valorReserva)
+
   def save(self, *args, **kwargs):
     if self.pk:
       mudancas = get_changes(self)

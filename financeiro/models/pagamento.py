@@ -24,6 +24,10 @@ class Pagamento(models.Model):
     on_delete= models.CASCADE,
   )
 
+  def atualizar_valor(self, valor):
+    self.valor = valor
+    self.save()
+
   def __str__(self):
     return f"Pagamento {self.id}"
 
