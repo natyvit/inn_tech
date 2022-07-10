@@ -36,3 +36,10 @@ class ReservaAdmin(admin.ModelAdmin):
     "quarto",
     "hospede",
   ]
+
+  def get_readonly_fields(self, request, obj=None):
+    pagamento_nao_confirmado = not obj.pagamentoConfirmado
+    if obj and pagamento_nao_confirmado:
+      return ["dataSaida"]
+
+    return []
