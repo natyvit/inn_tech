@@ -9,7 +9,7 @@ class PagamentoAdmin(admin.ModelAdmin):
     "dataCriacao",
     "reserva",
   ]
-  
+
   search_fields= [
     "id",
     "valor",
@@ -20,10 +20,6 @@ class PagamentoAdmin(admin.ModelAdmin):
   list_filter= [
     "dataCriacao",
     "reserva",
-  ]
-
-  fields= [
-    "valor",
   ]
 
   def has_change_permission(self, request, obj= None):

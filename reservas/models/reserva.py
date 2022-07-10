@@ -1,5 +1,8 @@
 from django.db import models
+from global_functions import get_changes
+
 from .quarto import Quarto
+
 
 class Reserva(models.Model):
   """
@@ -40,6 +43,22 @@ class Reserva(models.Model):
     null= True,
     on_delete= models.SET_NULL,
   )
+
+  def gerar_pagamento_se_confirmado(self):
+    from financeiro.models import Pagamento
+
+    if self.pagamentoConfirmado:
+      Pagamento.objects.create(
+        valor=self.valorReserva,
+        reserva=self,
+      )
+
+  def save(self, *args, **kwargs):
+    if self.pk:
+      mudancas = get_changes(self)
+      kwargs["update_fields"] = mudancas.normais
+
+    super(Reserva, self).save(*args, **kwargs)
 
   def __str__(self):
     return f"Reserva {self.id}"
