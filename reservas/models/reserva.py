@@ -1,6 +1,6 @@
 from django.db import models
 from global_functions import get_changes
-
+from core.models import Hospede
 from .quarto import Quarto
 
 
@@ -40,6 +40,13 @@ class Reserva(models.Model):
   quarto = models.ForeignKey(
     Quarto,
     verbose_name= "Quarto",
+    null= True,
+    on_delete= models.SET_NULL,
+  )
+
+  hospede = models.ForeignKey(
+    Hospede,
+    verbose_name= "Hóspede",
     null= True,
     on_delete= models.SET_NULL,
   )
