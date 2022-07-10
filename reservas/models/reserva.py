@@ -15,6 +15,7 @@ class Reserva(models.Model):
 
   dataSaida = models.DateTimeField(
     verbose_name= "Data Saída",
+    help_text="Disponível após pagamento confirmado",
     null= True,
     blank= True,
   )
@@ -55,6 +56,13 @@ class Reserva(models.Model):
   def gerou_pagamento(self):
     return hasattr(self, "pagamento")
 
+  @property
+  def reserva_encerrada(self):
+    if self.dataSaida:
+      return True
+    else:
+      return False
+
   def gerar_pagamento_se_confirmado(self):
     from financeiro.models import Pagamento
 
@@ -68,6 +76,18 @@ class Reserva(models.Model):
   def atualizar_valor_pagamento(self):
     if self.gerou_pagamento:
       self.pagamento.atualizar_valor(self.valorReserva)
+
+  def ocupar_quarto(self):
+    quarto_desocupado = self.quarto and self.quarto.ocupacao == False
+
+    if quarto_desocupado:
+      self.quarto.atualizar_ocupacao(True)
+
+  def desocupar_quarto(self):
+    quarto_ocupado = self.quarto and self.quarto.ocupacao == True
+
+    if quarto_ocupado:
+      self.quarto.atualizar_ocupacao(False)
 
   def save(self, *args, **kwargs):
     if self.pk:

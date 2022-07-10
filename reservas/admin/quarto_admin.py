@@ -36,3 +36,12 @@ class QuartoAdmin(admin.ModelAdmin):
     "descricao",
     "ocupacao",
   ]
+
+  def get_queryset(self, request):
+    query = super().get_queryset(request)
+
+    busca_por_autocomplete = request.path == "/admin/autocomplete/"
+    if busca_por_autocomplete:
+      return query.filter(ocupacao=False)
+    else:
+      return query

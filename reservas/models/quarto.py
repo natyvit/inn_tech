@@ -36,6 +36,10 @@ class Quarto(models.Model):
     on_delete= models.SET_NULL,
   )
 
+  def atualizar_ocupacao(self, ocupacao):
+    self.ocupacao = ocupacao
+    self.save()
+
   def save(self, *args, **kwargs):
     user = get_current_user()
     if user and not user.pk:
