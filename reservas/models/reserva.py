@@ -44,10 +44,15 @@ class Reserva(models.Model):
     on_delete= models.SET_NULL,
   )
 
+  @property
+  def gerou_pagamento(self):
+    return hasattr(self, "pagamento")
+
   def gerar_pagamento_se_confirmado(self):
     from financeiro.models import Pagamento
 
-    if self.pagamentoConfirmado:
+    nao_gerou_pagamento = not self.gerou_pagamento
+    if self.pagamentoConfirmado and nao_gerou_pagamento:
       Pagamento.objects.create(
         valor=self.valorReserva,
         reserva=self,
