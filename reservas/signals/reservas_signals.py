@@ -10,5 +10,10 @@ def reserva_post_save(sender, instance, created, **kwargs):
         instance.gerar_pagamento_se_confirmado()
     elif kwargs["update_fields"]:
         mudou_pagamentoConfirmado = "pagamentoConfirmado" in kwargs["update_fields"]
+        mudou_valorReserva = "valorReserva" in kwargs["update_fields"]
+
         if mudou_pagamentoConfirmado:
             instance.gerar_pagamento_se_confirmado()
+
+        if mudou_valorReserva:
+            instance.atualizar_valor_pagamento()
