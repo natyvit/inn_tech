@@ -16,7 +16,7 @@ class Pagamento(models.Model):
     auto_now_add= True,
   )
 
-  reserva = models.ForeignKey(
+  reserva = models.OneToOneField(
     "reservas.Reserva",
     verbose_name= "Reserva",
     null= True,
