@@ -77,6 +77,12 @@ class Reserva(models.Model):
     if self.gerou_pagamento:
       self.pagamento.atualizar_valor(self.valorReserva)
 
+  def ocupar_quarto(self):
+    quarto_descoupado = self.quarto and self.quarto.ocupacao == False
+
+    if quarto_descoupado:
+      self.quarto.atualizar_ocupacao(True)
+
   def save(self, *args, **kwargs):
     if self.pk:
       mudancas = get_changes(self)

@@ -8,6 +8,7 @@ from ..models import Reserva
 def reserva_post_save(sender, instance, created, **kwargs):
     if created:
         instance.gerar_pagamento_se_confirmado()
+        instance.ocupar_quarto()
     elif kwargs["update_fields"]:
         mudou_pagamentoConfirmado = "pagamentoConfirmado" in kwargs["update_fields"]
         mudou_valorReserva = "valorReserva" in kwargs["update_fields"]
