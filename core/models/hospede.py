@@ -2,6 +2,9 @@ from tabnanny import verbose
 from django.db import models
 
 class Hospede(models.Model):
+  """
+  Esta classe é respondável por todas as funcionalidades de hóspedes.
+  """
   nome = models.CharField(
     verbose_name= "Nome",
     max_length= 30,
