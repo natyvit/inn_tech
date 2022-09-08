@@ -26,14 +26,14 @@ def get_changes(object: object) -> namedtuple:
         try:
             if getattr(old_object, field.name) != getattr(new_object, field.name):
                 return field.name
-        except:
+        except TypeError():
             pass
 
     def houve_mudanca_back(field):
         try:
             if getattr(old_object, field.name) != getattr(new_object, field.name):
                 return field
-        except:
+        except TypeError():
             pass
 
     change_normal_fields = list(filter(campo_valido, map(houve_mudanca_normal, object._meta.fields)))
