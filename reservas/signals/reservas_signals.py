@@ -1,5 +1,3 @@
-from xml.dom import NotFoundErr
-
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
@@ -12,17 +10,17 @@ def reserva_post_save(sender, instance, created, **kwargs):
         instance.gerar_pagamento_se_confirmado()
         instance.ocupar_quarto()
     elif kwargs["update_fields"]:
-        mudou_pagamentoConfirmado = "pagamentoConfirmado" in kwargs["update_fields"]
-        mudou_valorReserva = "valorReserva" in kwargs["update_fields"]
-        mudou_dataSaida = "dataSaida" in kwargs["update_fields"]
+        mudou_pagamento_confirmado = "pagamentoConfirmado" in kwargs["update_fields"]
+        mudou_valor_reserva = "valorReserva" in kwargs["update_fields"]
+        mudou_data_saida = "dataSaida" in kwargs["update_fields"]
 
-        if mudou_pagamentoConfirmado:
+        if mudou_pagamento_confirmado:
             instance.gerar_pagamento_se_confirmado()
 
-        if mudou_valorReserva:
+        if mudou_valor_reserva:
             instance.atualizar_valor_pagamento()
 
-        if mudou_dataSaida:
+        if mudou_data_saida:
             instance.desocupar_quarto()
 
 
@@ -30,7 +28,7 @@ def reserva_post_save(sender, instance, created, **kwargs):
 def reserva_pre_save(sender, instance, **kwargs):
     try:
         old_object = Reserva.objects.get(id=instance.id)
-    except NotFoundErr:
+    except TypeError():
         old_object = None
 
     if old_object and (old_object.quarto != instance.quarto):
