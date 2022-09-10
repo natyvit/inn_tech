@@ -1,3 +1,5 @@
+from xml.dom import NotFoundErr
+
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
@@ -19,15 +21,16 @@ def reserva_post_save(sender, instance, created, **kwargs):
 
         if mudou_valorReserva:
             instance.atualizar_valor_pagamento()
-        
+
         if mudou_dataSaida:
             instance.desocupar_quarto()
+
 
 @receiver(pre_save, sender=Reserva)
 def reserva_pre_save(sender, instance, **kwargs):
     try:
         old_object = Reserva.objects.get(id=instance.id)
-    except:
+    except NotFoundErr:
         old_object = None
 
     if old_object and (old_object.quarto != instance.quarto):

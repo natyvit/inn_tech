@@ -1,105 +1,123 @@
+from core.models import Hospede
 from django.db import models
 from global_functions import get_changes
-from core.models import Hospede
+
 from .quarto import Quarto
 
 
 class Reserva(models.Model):
-  """
-  Está classe é respondável por todas as funcionalidades de reservas.
-  """
-  dataChegada = models.DateTimeField(
-    verbose_name= "Data Chegada",
-    help_text= "*Campo Obrigatório",
-  )
+    """
+    Esta classe é respondável por todas as funcionalidades de reservas.
+    """
 
-  dataSaida = models.DateTimeField(
-    verbose_name= "Data Saída",
-    help_text="Disponível após pagamento confirmado",
-    null= True,
-    blank= True,
-  )
+    dataChegada = models.DateTimeField(
+        verbose_name="Data Chegada",
+        help_text="*Campo Obrigatório",
+    )
 
-  valorReserva = models.DecimalField(
-    verbose_name= "Valor da Reserva",
-    help_text= "*Campo Obrigatório",
-    max_digits= 7,
-    decimal_places= 2,
-  )
+    dataSaida = models.DateTimeField(
+        verbose_name="Data Saída",
+        help_text="Disponível após pagamento confirmado",
+        null=True,
+        blank=True,
+    )
 
-  pagamentoConfirmado = models.BooleanField(
-    verbose_name= "Pagamento Confirmado",
-    default= False,
-  )
+    valorReserva = models.DecimalField(
+        verbose_name="Valor da Reserva",
+        help_text="*Campo Obrigatório",
+        max_digits=7,
+        decimal_places=2,
+    )
 
-  observacoes = models.TextField(
-    verbose_name= "Observações",
-    null= True,
-    blank= True,
-  )
+    pagamentoConfirmado = models.BooleanField(
+        verbose_name="Pagamento Confirmado",
+        default=False,
+    )
 
-  quarto = models.ForeignKey(
-    Quarto,
-    verbose_name= "Quarto",
-    null= True,
-    on_delete= models.SET_NULL,
-  )
+    observacoes = models.TextField(
+        verbose_name="Observações",
+        null=True,
+        blank=True,
+    )
 
-  hospede = models.ForeignKey(
-    Hospede,
-    verbose_name= "Hóspede",
-    null= True,
-    on_delete= models.SET_NULL,
-  )
+    quarto = models.ForeignKey(
+        Quarto,
+        verbose_name="Quarto",
+        null=True,
+        on_delete=models.SET_NULL,
+    )
 
-  @property
-  def gerou_pagamento(self):
-    return hasattr(self, "pagamento")
+    hospede = models.ForeignKey(
+        Hospede,
+        verbose_name="Hóspede",
+        null=True,
+        on_delete=models.SET_NULL,
+    )
 
-  @property
-  def reserva_encerrada(self):
-    if self.dataSaida:
-      return True
-    else:
-      return False
+    @property
+    def gerou_pagamento(self):
+        return hasattr(self, "pagamento")
 
-  def gerar_pagamento_se_confirmado(self):
-    from financeiro.models import Pagamento
+    @property
+    def reserva_encerrada(self):
+        if self.dataSaida:
+            return True
+        else:
+            return False
 
-    nao_gerou_pagamento = not self.gerou_pagamento
-    if self.pagamentoConfirmado and nao_gerou_pagamento:
-      Pagamento.objects.create(
-        valor=self.valorReserva,
-        reserva=self,
-      )
+    def gerar_pagamento_se_confirmado(self) -> None:
+        """
+        Gera um pagamento.
+        """
 
-  def atualizar_valor_pagamento(self):
-    if self.gerou_pagamento:
-      self.pagamento.atualizar_valor(self.valorReserva)
+        from financeiro.models import Pagamento
 
-  def ocupar_quarto(self):
-    quarto_desocupado = self.quarto and self.quarto.ocupacao == False
+        nao_gerou_pagamento = not self.gerou_pagamento
+        if self.pagamentoConfirmado and nao_gerou_pagamento:
+            Pagamento.objects.create(
+                valor=self.valorReserva,
+                reserva=self,
+            )
 
-    if quarto_desocupado:
-      self.quarto.atualizar_ocupacao(True)
+    def atualizar_valor_pagamento(self) -> None:
+        """
+        Atualiza o valor do pagamento.
+        """
 
-  def desocupar_quarto(self):
-    quarto_ocupado = self.quarto and self.quarto.ocupacao == True
+        if self.gerou_pagamento:
+            self.pagamento.atualizar_valor(self.valorReserva)
 
-    if quarto_ocupado:
-      self.quarto.atualizar_ocupacao(False)
+    def ocupar_quarto(self) -> None:
+        """
+        Ocupa o quarto.
+        """
 
-  def save(self, *args, **kwargs):
-    if self.pk:
-      mudancas = get_changes(self)
-      kwargs["update_fields"] = mudancas.normais
+        quarto_desocupado = self.quarto and not self.quarto.ocupacao
 
-    super(Reserva, self).save(*args, **kwargs)
+        if quarto_desocupado:
+            self.quarto.atualizar_ocupacao(True)
 
-  def __str__(self):
-    return f"Reserva {self.id}"
+    def desocupar_quarto(self) -> None:
+        """
+        Desocupa o quarto.
+        """
 
-  class Meta:
-    app_label= "reservas"
-    verbose_name= "Reserva"
-    verbose_name_plural= "Reservas"
+        quarto_ocupado = self.quarto and self.quarto.ocupacao
+
+        if quarto_ocupado:
+            self.quarto.atualizar_ocupacao(False)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            mudancas = get_changes(self)
+            kwargs["update_fields"] = mudancas.normais
+
+        super(Reserva, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Reserva {self.id}"
+
+    class Meta:
+        app_label = "reservas"
+        verbose_name = "Reserva"
+        verbose_name_plural = "Reservas"

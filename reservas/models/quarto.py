@@ -2,57 +2,63 @@ from crum import get_current_user
 from django.contrib.auth.models import User
 from django.db import models
 
+
 class Quarto(models.Model):
-  """
-  Esta classe é responsável por todas as funcionalidades de quartos.
-  """
-  numero = models.IntegerField(
-    verbose_name= "Número",
-    unique= True,
-    help_text= "*Campo Obrigatório",
-  )
+    """
+    Esta classe é responsável por todas as funcionalidades de quartos.
+    """
 
-  capacidade = models.IntegerField(
-    verbose_name= "Capacidade",
-    help_text= "*Campo Obrigatório",
-  )
+    numero = models.IntegerField(
+        verbose_name="Número",
+        unique=True,
+        help_text="*Campo Obrigatório",
+    )
 
-  descricao = models.TextField(
-    verbose_name= "Descrição",
-    null= True,
-    blank= True,
-  )
+    capacidade = models.IntegerField(
+        verbose_name="Capacidade",
+        help_text="*Campo Obrigatório",
+    )
 
-  ocupacao = models.BooleanField(
-    verbose_name= "Ocupação",
-    default= False,
-  )
+    descricao = models.TextField(
+        verbose_name="Descrição",
+        null=True,
+        blank=True,
+    )
 
-  usuario_criacao = models.ForeignKey(
-    User,
-    verbose_name= "Usuário Criação",
-    null= True,
-    blank= True,
-    on_delete= models.SET_NULL,
-  )
+    ocupacao = models.BooleanField(
+        verbose_name="Ocupação",
+        default=False,
+    )
 
-  def atualizar_ocupacao(self, ocupacao):
-    self.ocupacao = ocupacao
-    self.save()
+    usuario_criacao = models.ForeignKey(
+        User,
+        verbose_name="Usuário Criação",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
-  def save(self, *args, **kwargs):
-    user = get_current_user()
-    if user and not user.pk:
-        user = None
-    if not self.pk:
-        self.usuario_criacao = user
+    def atualizar_ocupacao(self, ocupacao: bool) -> None:
+        """
+        Atualiza a ocupação do quarto.
+        """
 
-    super(Quarto, self).save(*args, **kwargs)
+        self.ocupacao = ocupacao
+        self.save()
 
-  def __str__(self):
-     return f"Quarto {self.numero}"
+    def save(self, *args, **kwargs):
+        user = get_current_user()
+        if user and not user.pk:
+            user = None
+        if not self.pk:
+            self.usuario_criacao = user
 
-  class Meta:
-    app_label= "reservas"
-    verbose_name= "Quarto"
-    verbose_name_plural= "Quartos"
+        super(Quarto, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Quarto {self.numero}"
+
+    class Meta:
+        app_label = "reservas"
+        verbose_name = "Quarto"
+        verbose_name_plural = "Quartos"
