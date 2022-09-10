@@ -19,9 +19,10 @@ def reserva_post_save(sender, instance, created, **kwargs):
 
         if mudou_valor_reserva:
             instance.atualizar_valor_pagamento()
-        
+
         if mudou_data_saida:
             instance.desocupar_quarto()
+
 
 @receiver(pre_save, sender=Reserva)
 def reserva_pre_save(sender, instance, **kwargs):
