@@ -10,7 +10,9 @@ def reserva_post_save(sender, instance, created, **kwargs):
         instance.gerar_pagamento_se_confirmado()
         instance.ocupar_quarto()
     elif kwargs["update_fields"]:
-        mudou_pagamento_confirmado = "pagamentoConfirmado" in kwargs["update_fields"]
+        mudou_pagamento_confirmado = (
+            "pagamentoConfirmado" in kwargs["update_fields"]
+        )
         mudou_valor_reserva = "valorReserva" in kwargs["update_fields"]
         mudou_data_saida = "dataSaida" in kwargs["update_fields"]
 
@@ -27,8 +29,8 @@ def reserva_post_save(sender, instance, created, **kwargs):
 @receiver(pre_save, sender=Reserva)
 def reserva_pre_save(sender, instance, **kwargs):
     try:
-        old_object = Reserva.objects.get(id=instance.id)
-    except TypeError():
+        old_object = Reserva.objects.filter(id=instance.id).first()
+    except TypeError:
         old_object = None
 
     if old_object and (old_object.quarto != instance.quarto):
